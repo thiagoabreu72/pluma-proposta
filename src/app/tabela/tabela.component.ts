@@ -36,7 +36,25 @@ export class TabelaComponent {
   habilitarDados: boolean = false;
 
   constructor(private servico: ServiceBpmService) {
-    // this.carregando = true;
+    // this.dadosTabelaFiltro = [
+    //   {
+    //     numEmp: 40,
+    //     tipCol: '1',
+    //     numCad: 2314,
+    //     nomFun: 'Thiago Testando',
+    //     posTra: 'PL42GC000026',
+    //     codCar: 52,
+    //     desCar: 'Analista de Sistemas',
+    //     desPos: 'PLUMA CASSILANDIA - EQUIPE DE VACINA/AUXILIAR PROD',
+    //     valSal: '1.627,07',
+    //     PerAlt1: '0',
+    //     PerAlt2: '0',
+    //     DatAlt1: '20/08/2025',
+    //     DatAlt2: '0',
+    //   },
+    // ];
+
+    this.carregando = true;
     servico.dados$.subscribe({
       next: (retorno) => {
         this.dadosFormulario = retorno;
@@ -53,26 +71,41 @@ export class TabelaComponent {
           this.dadosTabelaFiltro = this.dadosTabela.map((item) => {
             return {
               numEmp: item.numEmp,
-              codCen: item.codCen,
+              nomEmp: item.nomEmp,
               estPos: item.estPos,
+              tipCol: item.tipCol,
               posTra: item.posTra,
+              estCar: item.estCar,
+              codCar: item.codCar,
               numCad: item.numCad,
+              nomFun: item.nomFun,
               desPos: item.desPos,
               valSal: item.valSal,
-              Quadro01: item.Quadro01,
+              DatAlt1: item.DatAlt1,
+              DatAlt2: item.DatAlt2,
+              PerAlt1: item.PerAlt1,
+              PerAlt2: item.PerAlt2,
             };
           });
         } else if (Array.isArray(this.dadosTabela)) {
           this.dadosTabelaFiltro = this.dadosTabela.map((item) => {
             return {
               numEmp: item.numEmp,
+              nomEmp: item.nomEmp,
+              tipCol: item.tipCol,
               codCen: item.codCen,
               estPos: item.estPos,
               posTra: item.posTra,
+              estCar: item.estCar,
+              codCar: item.codCar,
               numCad: item.numCad,
+              nomFun: item.nomFun,
               desPos: item.desPos,
               valSal: item.valSal,
-              Quadro01: item.Quadro01,
+              DatAlt1: item.DatAlt1,
+              DatAlt2: item.DatAlt2,
+              PerAlt1: item.PerAlt1,
+              PerAlt2: item.PerAlt2,
             };
           });
         }
@@ -91,19 +124,6 @@ export class TabelaComponent {
     });
   }
 
-  mudaCor(status: string): string {
-    switch (status) {
-      case '':
-        return 'status-definicao';
-      case 'Pendente':
-        return 'status-andamento';
-      case 'Concluído':
-        return 'status-concluida';
-      default:
-        return '';
-    }
-  }
-
   obterStatusCarregando(status: boolean) {
     this.carregando = status;
   }
@@ -111,12 +131,16 @@ export class TabelaComponent {
   obterSelecao(dado: Dados) {
     this.dadoSelecionado = this.dadosTabela.filter(
       (item) =>
-        item.numCad === dado.numCad &&
         item.numEmp === dado.numEmp &&
-        item.codCen === dado.codCen &&
+        item.tipCol === dado.tipCol &&
+        item.numCad === dado.numCad &&
         item.posTra === dado.posTra
     )[0];
-    this.dadoSelecionado.valSal = dado.valSal;
+
+    this.dadoSelecionado.DatAlt1 = dado.DatAlt1;
+    this.dadoSelecionado.DatAlt2 = dado.DatAlt2;
+    this.dadoSelecionado.PerAlt1 = dado.PerAlt1;
+    this.dadoSelecionado.PerAlt2 = dado.PerAlt2;
   }
 
   // gravar dados
@@ -142,6 +166,7 @@ export class TabelaComponent {
   }
 
   receberDadosTabela(dados: any) {
+    this.obterSelecao(dados);
     this.enviarDados();
   }
 
@@ -150,6 +175,7 @@ export class TabelaComponent {
   }
 
   enviarDados() {
+    console.log(this.dadosFormulario);
     this.dadosFormulario.dados = this.dadosTabela;
     this.servico.dadosFormulario = this.dadosFormulario;
     this.dados = [];

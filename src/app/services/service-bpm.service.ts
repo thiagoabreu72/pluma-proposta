@@ -5,14 +5,9 @@ import { Mensagem } from '../interfaces/gerais.interface';
 import { Data, Info, ProcessVariables } from '../interfaces/workflow.interface';
 import { user } from '@seniorsistemas/senior-platform-data';
 import { Token } from '../interfaces/token.interface';
-import { Anotacao } from '../interfaces/anotacao.interface';
-import { MotivosAnotacao } from '../interfaces/motivo.inteface';
 import { Dados, Formulario } from '../interfaces/formulario.interface';
 import { DadosUsuario } from '../interfaces/dados-usuario.interface';
-import {
-  Colaborador,
-  GetColaboradorPosto,
-} from '../interfaces/colaborador.interface';
+import { GetColaboradorPosto } from '../interfaces/colaborador.interface';
 
 declare var workflowCockpit: any;
 
@@ -86,7 +81,7 @@ export class ServiceBpmService {
           retorno.outputData.responseCode = 201;
         } else {
           retorno = await firstValueFrom(
-            this.insereOrcamento(this.dadosFormulario)
+            this.insereProposta(this.dadosFormulario)
           );
         }
 
@@ -161,15 +156,14 @@ export class ServiceBpmService {
       this.dadosFormulario.usuario_solicitante = variavel.get(
         'usuario_solicitante'
       );
-      this.dadosFormulario.dados = variavel.get('Dados');
+      this.dadosFormulario.dados = variavel.get('dados');
       this.dadosFormulario.tipo_acao = variavel.get('tipo_acao');
 
       // transformar em Array antes de encaminhar para o componente
       if (this.dadosFormulario.dados) {
         this.dadosFormulario.dados = JSON.parse(this.dadosFormulario.dados);
-        console.log(this.dadosFormulario);
       }
-
+      // console.log(this.dadosFormulario)
 
       _info.getPlatformData().then((dados) => {
         this.dadosUsuario.access_token = dados.token.access_token;
@@ -189,6 +183,18 @@ export class ServiceBpmService {
     });
     let body = {};
     body = this.montarBody('insereOrcamento', parametros);
+    return this.http.post<Dados>(this.urlInvoke, body, {
+      headers,
+    });
+  }
+
+  insereProposta(parametros: Formulario): Observable<Dados> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `bearer ${this.dadosUsuario.access_token}`,
+    });
+    let body = {};
+    body = this.montarBody('insereProposta', parametros);
     return this.http.post<Dados>(this.urlInvoke, body, {
       headers,
     });

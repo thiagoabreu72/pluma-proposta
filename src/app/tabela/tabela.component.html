@@ -49,94 +49,136 @@
   <p-table
     [value]="this.dadosTabelaFiltro"
     [tableStyle]="{ 'min-width': '50rem' }"
+    [globalFilterFields]="['nomEmp', 'nomFun']"
   >
-  <!-- empregado/posto de trabalho/salário atual/data alteração 1/percentual alteração 1 / data alteração 2/percentual alteração 2 -->
     <ng-template pTemplate="header">
       <tr>
-        <th>Seq.</th>
-        <th>Cadastro</th>
-        <th>Nome</th>
-        <th>Posto de Trabalho</th>
+        <th>
+          Empresa
+          <p-columnFilter
+            class=""
+            type="text"
+            field="nomEmp"
+            placeholder="Filtrar empresa"
+            ariaLabel="Filtre o nome da empresa"
+            filterOn="input"
+            matchMode="contains"
+            [showAddButton]="false"
+            [showOperator]="false"
+            [showMenu]="false"
+          ></p-columnFilter>
+        </th>
+        <th>
+          Colaborador
+          <p-columnFilter
+            type="text"
+            field="nomFun"
+            placeholder="Filtrar colaborador"
+            ariaLabel="Filtre o nome do colaborado"
+            filterOn="input"
+            matchMode="contains"
+            [showAddButton]="false"
+            [showOperator]="false"
+            [showMenu]="false"
+          ></p-columnFilter>
+        </th>
+        <th>
+          Posto de Trabalho
+          <p-columnFilter
+            type="text"
+            field="desPos"
+            placeholder="Filtrar posto"
+            ariaLabel="Filtre o nome do posto"
+            filterOn="input"
+            matchMode="contains"
+            [showAddButton]="false"
+            [showOperator]="false"
+            [showMenu]="false"
+          ></p-columnFilter>
+        </th>
+        <th>
+          Cargo
+          <p-columnFilter
+            type="text"
+            field="codCar"
+            placeholder="Filtrar cargo"
+            ariaLabel="Filtre o nome do codCar"
+            filterOn="input"
+            matchMode="contains"
+            [showAddButton]="false"
+            [showOperator]="false"
+            [showMenu]="false"
+          ></p-columnFilter>
+        </th>
         <th>Salário Atual</th>
-        <th>Data Alteração 1</th>
-        <th>Percentual Alteração 1</th>
-        <th>Data Alteração 2</th>
-        <th>Percentual Alteração 2</th>
+        <th>1ª Data Alteração</th>
+        <th>1º % Alteração</th>
+        <th>2ª Data Alteração</th>
+        <th>2º % Alteração</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-dadosTabelaFiltro let-rowIndex="rowIndex">
       <tr>
-        <td class="cores-tabela">{{ rowIndex + 1 }}</td>
-        <td>{{ dadosTabelaFiltro.posTra }}</td>
-        <td>{{ dadosTabelaFiltro.desPos }}</td>
-        <td>{{ dadosTabelaFiltro.codCen }}</td>
-        <td>{{ dadosTabelaFiltro.Quadro01 }}</td>
+        <td class="cores-tabela">
+          {{ dadosTabelaFiltro.numEmp + " - " + dadosTabelaFiltro.nomEmp }}
+        </td>
+
+        <td>
+          {{ dadosTabelaFiltro.numCad + " - " + dadosTabelaFiltro.nomFun }}
+        </td>
+        <td>
+          {{ dadosTabelaFiltro.posTra + " - " + dadosTabelaFiltro.desPos }}
+        </td>
+        <td>
+          {{ dadosTabelaFiltro.codCar }}
+        </td>
+        <td>{{ "R$ " + dadosTabelaFiltro.valSal }}</td>
+        <td>
+          <app-data
+            [valor]="dadosTabelaFiltro.DatAlt1"
+            (valorAlterado)="
+              dadosTabelaFiltro.DatAlt1 = $event;
+              obterSelecao(dadosTabelaFiltro)
+            "
+          ></app-data>
+        </td>
+
         <td>
           <p-inputNumber
-            class="p-inputtext-sm col-12"
-            mode="currency"
-            currency="BRL"
             locale="pt-BR"
-            [(ngModel)]="dadosTabelaFiltro.valSal"
+            [showButtons]="true"
+            [min]="0"
+            [max]="999"
+            [(ngModel)]="dadosTabelaFiltro.PerAlt1"
+            [style]="{ width: '100%' }"
+            (ngModelChange)="obterSelecao(dadosTabelaFiltro)"
+          ></p-inputNumber>
+        </td>
+        <td>
+          <app-data
+            [valor]="dadosTabelaFiltro.DatAlt2"
+            (valorAlterado)="
+              dadosTabelaFiltro.DatAlt2 = $event;
+              obterSelecao(dadosTabelaFiltro)
+            "
+          ></app-data>
+          <!-- (valorAlterado)="receberDadosTabela($event)"
+            (ngModelChange)="obterSelecao(dadosTabelaFiltro)" -->
+        </td>
+
+        <td>
+          <p-inputNumber
+            locale="pt-BR"
+            [showButtons]="true"
+            [min]="0"
+            [max]="999"
+            [(ngModel)]="dadosTabelaFiltro.PerAlt2"
             (ngModelChange)="obterSelecao(dadosTabelaFiltro)"
             [style]="{ width: '100%' }"
-            [disabled]="dadosTabelaFiltro.Quadro01 > 0"
-          >
-          </p-inputNumber>
-        </td>
-        <td>
-          <p-button
-            class="p-button-sm"
-            label="Colaboradores"
-            styleClass="p-button-success"
-            icon="pi pi-user"
-            (click)="obterSelecao(dadosTabelaFiltro); showDialog('colaborador')"
-          ></p-button>
-        </td>
-        <td>
-          <p-button
-            class="p-button-sm"
-            label="Alterar"
-            styleClass="p-button-success"
-            icon="pi pi-plus-circle"
-            (click)="obterSelecao(dadosTabelaFiltro); showDialog('quadro')"
-          ></p-button>
+          ></p-inputNumber>
+          <!-- (ngModelChange)="receberDadosTabela($event)" -->
         </td>
       </tr>
     </ng-template>
   </p-table>
 </p-card>
-
-<p-dialog
-  header="Manutenção Quadro"
-  [style]="{ width: '85vw' }"
-  [(visible)]="habilitarQuadro"
-  [modal]="true"
->
-  <app-quadro
-    [formulario]="dadoSelecionado"
-    (formularioAlterado)="receberDadosTabela($event)"
-    (enviaMensagem)="getMensagem($event)"
-    *ngIf="
-      dadoSelecionado != {} && dadoSelecionado != undefined && habilitarQuadro
-    "
-  ></app-quadro>
-</p-dialog>
-
-<p-dialog
-  header="Colaboradores do Posto"
-  [style]="{ width: '85vw' }"
-  [(visible)]="habilitarColaborador"
-  [modal]="true"
->
-  <app-colaboradores
-    [dados]="dadoSelecionado"
-    (carregando)="obterStatusCarregando($event)"
-    *ngIf="
-      dadoSelecionado != {} &&
-      dadoSelecionado != undefined &&
-      habilitarColaborador
-    "
-  >
-  </app-colaboradores>
-</p-dialog>

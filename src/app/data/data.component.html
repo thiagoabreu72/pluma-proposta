@@ -1,0 +1,10 @@
+<input
+  type="text"
+  class="p-inputtext p-component w-full"
+  [placeholder]="placeholder"
+  [value]="texto"
+  maxlength="10"
+  (input)="onInput($event)"
+  (blur)="onBlur()"
+  (focus)="onFocus($event)"
+/>

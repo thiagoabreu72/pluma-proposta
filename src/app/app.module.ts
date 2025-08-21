@@ -40,6 +40,7 @@ import { PanelModule } from 'primeng/panel';
 
 import { HoraComponent } from './hora/hora.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
+import { DataComponent } from './data/data.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { ColaboradoresComponent } from './colaboradores/colaboradores.component'
     TabelaMensalComponent,
     HoraComponent,
     ColaboradoresComponent,
+    DataComponent,
   ],
   imports: [
     AccordionModule,
