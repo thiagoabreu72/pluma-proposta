@@ -1,0 +1,35 @@
+.c-loader {
+  animation: is-rotating 1s infinite;
+  border: 6px solid #004139;
+  border-radius: 50%;
+  border-top-color: #ffcd00;
+  height: 50px;
+  width: 50px;
+  margin-top: 10rem;
+  margin-inline: auto;
+}
+
+.modal-content {
+  background-color: transparent;
+  border: none;
+}
+
+@keyframes is-rotating {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.modal.fade.show.transparencia {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999; /* Sobrepõe qualquer outro elemento */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+

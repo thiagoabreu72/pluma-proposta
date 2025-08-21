@@ -1,0 +1,142 @@
+<app-spinner [carregandoDados]="this.carregando"></app-spinner>
+
+<p-card header="" [style]="{ 'text-align': 'center' }">
+  <p-panel header="Informações da Solicitação">
+    <div class="grid">
+      <span class="font-bold col-2" [style]="{ 'text-align': 'right' }"
+        >Solicitante:</span
+      >
+      <span class="col-10" [style]="{ 'text-align': 'left' }">{{
+        dadosFormulario.usuario_solicitante
+      }}</span>
+    </div>
+    <div class="grid">
+      <span class="font-bold col-2" [style]="{ 'text-align': 'right' }"
+        >Gestor:</span
+      >
+      <span class="col-10" [style]="{ 'text-align': 'left' }">{{
+        dadosFormulario.nome_gestor
+      }}</span>
+    </div>
+
+    <div class="grid">
+      <span class="font-bold col-2" [style]="{ 'text-align': 'right' }"
+        >Ação Desejada:</span
+      >
+      <p-dropdown
+        class="p-inputtext-sm col-3"
+        [options]="opcao"
+        [(ngModel)]="opcaoSelecionada"
+        [filter]="true"
+        [showClear]="true"
+        [style]="{ width: '100%' }"
+        [virtualScroll]="false"
+        (onChange)="obterTipo(opcaoSelecionada)"
+        optionLabel="tipo"
+        filterBy="tipo"
+        placeholder="Selecione uma opção"
+      >
+        <ng-template pTemplate="selectedItem" let-opcaoSelecionada>
+          <div class="flex align-items-center">
+            <div>{{ opcaoSelecionada.tipo }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </p-panel>
+  <br />
+  <br />
+  <p-table
+    [value]="this.dadosTabelaFiltro"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+  <!-- empregado/posto de trabalho/salário atual/data alteração 1/percentual alteração 1 / data alteração 2/percentual alteração 2 -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Seq.</th>
+        <th>Cadastro</th>
+        <th>Nome</th>
+        <th>Posto de Trabalho</th>
+        <th>Salário Atual</th>
+        <th>Data Alteração 1</th>
+        <th>Percentual Alteração 1</th>
+        <th>Data Alteração 2</th>
+        <th>Percentual Alteração 2</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-dadosTabelaFiltro let-rowIndex="rowIndex">
+      <tr>
+        <td class="cores-tabela">{{ rowIndex + 1 }}</td>
+        <td>{{ dadosTabelaFiltro.posTra }}</td>
+        <td>{{ dadosTabelaFiltro.desPos }}</td>
+        <td>{{ dadosTabelaFiltro.codCen }}</td>
+        <td>{{ dadosTabelaFiltro.Quadro01 }}</td>
+        <td>
+          <p-inputNumber
+            class="p-inputtext-sm col-12"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            [(ngModel)]="dadosTabelaFiltro.valSal"
+            (ngModelChange)="obterSelecao(dadosTabelaFiltro)"
+            [style]="{ width: '100%' }"
+            [disabled]="dadosTabelaFiltro.Quadro01 > 0"
+          >
+          </p-inputNumber>
+        </td>
+        <td>
+          <p-button
+            class="p-button-sm"
+            label="Colaboradores"
+            styleClass="p-button-success"
+            icon="pi pi-user"
+            (click)="obterSelecao(dadosTabelaFiltro); showDialog('colaborador')"
+          ></p-button>
+        </td>
+        <td>
+          <p-button
+            class="p-button-sm"
+            label="Alterar"
+            styleClass="p-button-success"
+            icon="pi pi-plus-circle"
+            (click)="obterSelecao(dadosTabelaFiltro); showDialog('quadro')"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog
+  header="Manutenção Quadro"
+  [style]="{ width: '85vw' }"
+  [(visible)]="habilitarQuadro"
+  [modal]="true"
+>
+  <app-quadro
+    [formulario]="dadoSelecionado"
+    (formularioAlterado)="receberDadosTabela($event)"
+    (enviaMensagem)="getMensagem($event)"
+    *ngIf="
+      dadoSelecionado != {} && dadoSelecionado != undefined && habilitarQuadro
+    "
+  ></app-quadro>
+</p-dialog>
+
+<p-dialog
+  header="Colaboradores do Posto"
+  [style]="{ width: '85vw' }"
+  [(visible)]="habilitarColaborador"
+  [modal]="true"
+>
+  <app-colaboradores
+    [dados]="dadoSelecionado"
+    (carregando)="obterStatusCarregando($event)"
+    *ngIf="
+      dadoSelecionado != {} &&
+      dadoSelecionado != undefined &&
+      habilitarColaborador
+    "
+  >
+  </app-colaboradores>
+</p-dialog>

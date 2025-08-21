@@ -1,0 +1,32 @@
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  text-align: center;
+  //   padding: 0.5rem;
+  background: #e0e0e0;
+  color: #333;
+  font-weight: bold;
+}
+
+:host ::ng-deep.p-datatable .p-datatable-tbody > tr > td {
+  text-align: left;
+  border: 1px solid #dee2e6;
+  // border-width: 0 0 1px 0;
+  padding: 0.25rem 0.25rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  text-align: left;
+  padding: 0.25rem 0.25rem;
+  border: 1px solid #dee2e6;
+  border-width: 0 0 1px 0;
+  font-weight: 700;
+  color: #343a40;
+  background: #f8f9fa;
+  transition: box-shadow 0.2s;
+}
+
+:host ::ng-deep .p-inputnumber-input {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+

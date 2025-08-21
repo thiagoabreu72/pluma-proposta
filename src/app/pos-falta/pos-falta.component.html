@@ -1,0 +1,111 @@
+<div class="grid">
+  <div class="col-6">
+    <div class="col-12">
+      <span class="font-bold col-12"
+        ><strong style="color: red"></strong> Nome</span
+      >
+      <div class="col-12">
+        <input
+          class="col-12 p-inputtext-sm"
+          [(ngModel)]="this.formulario.nomFun"
+          [disabled]="true"
+          type="text"
+          pInputText
+          required
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="col-3">
+    <div class="col-12">
+      <span class="font-bold col-12"
+        ><strong style="color: red"></strong> Data Inicial - Falta</span
+      >
+      <div class="col-12">
+        <p-calendar
+          [(ngModel)]="this.formulario.datIni"
+          class="p-inputtext-sm"
+          dateFormat="dd/mm/yy"
+          [style]="{ width: '100%' }"
+          [disabled]="true"
+        ></p-calendar>
+        <!-- (ngModelChange)="getDataAlteracao(this.dataAlteracao)" -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-3">
+    <div class="col-12">
+      <span class="font-bold col-12"
+        ><strong style="color: red"></strong> Data Final - Falta</span
+      >
+      <div class="col-12">
+        <p-calendar
+          [(ngModel)]="this.formulario.datFim"
+          class="p-inputtext-sm"
+          dateFormat="dd/mm/yy"
+          [style]="{ width: '100%' }"
+          [disabled]="true"
+        ></p-calendar>
+        <!-- (ngModelChange)="getDataAlteracao(this.dataAlteracao)" -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="col-12">
+      <span class="font-bold col-12"
+        ><strong style="color: red"></strong> Motivo</span
+      >
+      <div class="col-12">
+        <p-dropdown
+          class="p-inputtext-sm"
+          [options]="motivos"
+          [(ngModel)]="motivoSelecionado"
+          [filter]="true"
+          [showClear]="true"
+          [style]="{ width: '100%' }"
+          [virtualScroll]="false"
+          optionLabel="desMot"
+          filterBy="desMot"
+          placeholder="Selecione um motivo"
+          [disabled]="false"
+        >
+          <ng-template pTemplate="selectedItem" let-opcaoSelecionada>
+            <div class="flex align-items-center">
+              <div>{{ opcaoSelecionada.desMot }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="col-12">
+      <span class="font-bold col-12">Observação</span>
+      <div class="col-12">
+        <textarea
+          rows="3"
+          pInputTextarea
+          class="col-12"
+          [(ngModel)]="this.formulario.notFic"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-button
+        label="Gravar"
+        class="col-4"
+        styleClass="p-button-success"
+        icon="pi pi-save"
+        [style]="{ width: '150px' }"
+        (onClick)="gravarDados()"
+      ></p-button>
+    </div>
+  </div>
+</div>

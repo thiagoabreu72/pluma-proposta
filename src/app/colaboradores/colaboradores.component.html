@@ -1,0 +1,22 @@
+<p-table
+  [value]="this.dadosTabela"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  *ngIf="this.dadosTabela.length > 0"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Cadastro</th>
+      <th>Nome</th>
+      <th>Cargo</th>
+      <th>Data Admissão</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-dadosTabela let-rowIndex="rowIndex">
+    <tr>
+      <td>{{ dadosTabela.numCad }}</td>
+      <td>{{ dadosTabela.nomFun }}</td>
+      <td>{{ dadosTabela.cargo }}</td>
+      <td>{{ dadosTabela.datAdm }}</td>
+    </tr>
+  </ng-template>
+</p-table>

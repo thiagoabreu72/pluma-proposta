@@ -1,0 +1,11 @@
+<input
+  type="text"
+  class="p-inputtext p-component w-full"
+  [attr.placeholder]="placeholder"
+  [disabled]="desabilitar"
+  [value]="valor"
+  maxlength="7"
+  (input)="onInput($event)"
+  (blur)="onBlur()"
+  (focus)="onFocus($event)"
+/>

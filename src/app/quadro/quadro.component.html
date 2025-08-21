@@ -1,0 +1,30 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="col-12">
+      <app-tabela-mensal titulo="QL" prefixo="Quadro" [dados]="dadosTabela">
+      </app-tabela-mensal>
+      <br />
+      <app-tabela-mensal titulo="HE 50%" prefixo="HE050" [dados]="dadosTabela">
+      </app-tabela-mensal>
+      <br />
+      <app-tabela-mensal titulo="HE 80%" prefixo="HE080" [dados]="dadosTabela">
+      </app-tabela-mensal>
+      <br />
+      <app-tabela-mensal titulo="HE 100%" prefixo="HE100" [dados]="dadosTabela">
+      </app-tabela-mensal>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-button
+        label="Gravar"
+        class="col-4"
+        styleClass="p-button-success"
+        icon="pi pi-save"
+        [style]="{ width: '150px' }"
+        (click)="enviarDados()"
+      ></p-button>
+    </div>
+  </div>
+</div>

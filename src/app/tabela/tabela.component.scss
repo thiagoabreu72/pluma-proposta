@@ -1,0 +1,77 @@
+.status-definicao {
+  color: blue; /* Cor para status "Pendente" */
+}
+
+.status-andamento {
+  color: rgb(255, 208, 0);
+}
+
+.status-concluida {
+  color: green; /* Cor para status "Aprovado" */
+}
+
+.status-cancelada {
+  color: red; /* Cor para status "Recusado" */
+}
+
+tr td,
+tr th {
+  text-align: left;
+  padding: 0.6rem 0.6rem;
+}
+
+thead,
+th {
+  background-color: #16403a !important;
+  color: #ffffff !important;
+}
+
+::ng-deep.p-panel .p-panel-header {
+  background: #16403a;
+  color: white;
+}
+
+::ng-deep .p-button.p-button-success {
+  background-color: #16403a !important;
+  border-color: #338578 !important;
+  color: white !important;
+}
+
+::ng-deep .p-button.p-button-success {
+  background-color: #16403a !important;
+  border-color: #16403a !important;
+  color: white !important;
+}
+
+::ng-deep .p-button.p-button-success:active {
+  background-color: #338578 !important;
+  border-color: #16403a !important;
+}
+
+::ng-deep .p-button.p-button-success:enabled:focus {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #338578, 0 1px 2px 0 black;
+}
+
+:host ::ng-deep .p-inputtext:enabled:hover {
+  border-color: #16403a;
+}
+
+:host ::ng-deep .p-inputtext:enabled:focus {
+  box-shadow: 0 0 0 0.2rem #338578;
+  border-color: #16403a;
+}
+
+:host ::ng-deep .p-dropdown:not(.p-disabled):hover {
+  border-color: #16403a;
+}
+
+:host ::ng-deep .p-dropdown:not(.p-disabled).p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #338578;
+  border-color: #16403a;
+}
+
+:host ::ng-deep .p-dialog {
+  max-height: 95%;
+}
