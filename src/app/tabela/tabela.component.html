@@ -53,10 +53,10 @@
   >
     <ng-template pTemplate="header">
       <tr>
+        <th *ngIf="exibirCheck"></th>
         <th>
           Empresa
           <p-columnFilter
-            class=""
             type="text"
             field="nomEmp"
             placeholder="Filtrar empresa"
@@ -119,6 +119,14 @@
     </ng-template>
     <ng-template pTemplate="body" let-dadosTabelaFiltro let-rowIndex="rowIndex">
       <tr>
+        <th *ngIf="exibirCheck">
+          <p-checkbox
+            [binary]="true"
+            inputId="binary"
+            [(ngModel)]="dadosTabelaFiltro.validado"
+            (onChange)="obterSelecao(dadosTabelaFiltro)"
+          ></p-checkbox>
+        </th>
         <td class="cores-tabela">
           {{ dadosTabelaFiltro.numEmp + " - " + dadosTabelaFiltro.nomEmp }}
         </td>
@@ -149,6 +157,7 @@
             [showButtons]="true"
             [min]="0"
             [max]="999"
+            [maxFractionDigits]="2"
             [(ngModel)]="dadosTabelaFiltro.PerAlt1"
             [style]="{ width: '100%' }"
             (ngModelChange)="obterSelecao(dadosTabelaFiltro)"
@@ -172,6 +181,7 @@
             [showButtons]="true"
             [min]="0"
             [max]="999"
+            [maxFractionDigits]="2"
             [(ngModel)]="dadosTabelaFiltro.PerAlt2"
             (ngModelChange)="obterSelecao(dadosTabelaFiltro)"
             [style]="{ width: '100%' }"

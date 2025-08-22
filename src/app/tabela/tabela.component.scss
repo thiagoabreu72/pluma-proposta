@@ -111,3 +111,24 @@ th {
 ::ng-deep .p-datatable tbody tr:nth-child(odd) {
   background-color: #ffffff; /* cor padrão */
 }
+
+// Check
+::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
+  border-color: rgb(32, 151, 38);
+  background: #2bee93;
+}
+
+::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #2bee93;
+  border-color: rgb(32, 151, 38);
+}
+
+:host
+  ::ng-deep
+  .p-checkbox:not(.p-checkbox-disabled)
+  .p-checkbox-box.p-highlight:hover {
+  border-color: rgb(32, 151, 38);
+  background: rgb(32, 151, 38);
+}

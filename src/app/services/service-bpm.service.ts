@@ -70,48 +70,63 @@ export class ServiceBpmService {
       formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    if (this.getEtapa() == 'rh') {
-      if (typeof this.dadosFormulario.dados === 'string') {
-        this.dadosFormulario.dados = JSON.parse(this.dadosFormulario.dados);
-      }
-
+    if (this.getEtapa() === 'rh') {
       try {
-        let retorno: Dados = { outputData: { responseCode: 400 } };
-        if (this.dadosFormulario.tipo_acao === 'Salvar Rascunho') {
-          retorno.outputData.responseCode = 201;
-        } else {
-          retorno = await firstValueFrom(
-            this.insereProposta(this.dadosFormulario)
-          );
+        // Garante que dadosFormulario.dados seja objeto
+        if (typeof this.dadosFormulario.dados === 'string') {
+          this.dadosFormulario.dados = JSON.parse(this.dadosFormulario.dados);
         }
 
-        if (retorno.outputData.responseCode === 200) {
-          this.dadosFormulario.dados = JSON.stringify(
-            this.dadosFormulario.dados
-          );
-          return { formData: this.dadosFormulario };
-        } else if (retorno.outputData.responseCode === 201) {
-          this.obterMensagem.next({
-            tipo: 1,
-            mensagem: 'Gravado com sucesso!',
-          });
-          this.dadosFormulario.dados = JSON.stringify(
-            this.dadosFormulario.dados
-          );
-          return { formData: this.dadosFormulario };
-        } else {
-          this.obterMensagem.next({
-            tipo: 4,
-            mensagem: 'Não foi possível gravar o formulário. Verifique!',
-          });
-          throw new Error('Não foi possível gravar o formulário. Verifique!');
+        // Define retorno base
+        let retorno: Dados = { outputData: { responseCode: 400 } };
+
+        switch (this.dadosFormulario.tipo_acao) {
+          case 'Salvar Rascunho':
+            retorno.outputData.responseCode = 201;
+            break;
+          case 'Seguir Processo':
+            // Verifica pendências
+            const temPendencia = this.dadosFormulario.dados.some(
+              (item: any) => item.validado !== true
+            );
+
+            if (temPendencia) {
+              const msg = 'Existem pendências no formulário. Verifique!';
+              this.obterMensagem.next({ tipo: 4, mensagem: msg });
+              throw new Error(msg);
+            }
+            retorno = await firstValueFrom(
+              this.insereOrcamento(this.dadosFormulario)
+            );
+            break;
+          case 'Retornar':
+            this.dadosFormulario.dados = JSON.stringify(
+              this.dadosFormulario.dados
+            );
+            return { formData: this.dadosFormulario };
         }
+
+        // Avalia o retorno
+        const code = retorno.outputData.responseCode;
+        if ([200, 201].includes(code)) {
+          if (code === 201) {
+            this.obterMensagem.next({
+              tipo: 1,
+              mensagem: 'Gravado com sucesso!',
+            });
+          }
+          this.dadosFormulario.dados = JSON.stringify(
+            this.dadosFormulario.dados
+          );
+          return { formData: this.dadosFormulario };
+        }
+
+        // Caso não seja tratado acima → erro
+        const msgErro = 'Não foi possível gravar o formulário. Verifique!';
+        this.obterMensagem.next({ tipo: 4, mensagem: msgErro });
+        throw new Error(msgErro);
       } catch (err) {
-        this.obterMensagem.next({
-          tipo: 4,
-          mensagem: 'Erro ao gravar. Tente novamente.',
-        });
-        throw err;
+        throw err; // mantém propagação
       }
     } else {
       if (
@@ -133,6 +148,70 @@ export class ServiceBpmService {
         throw new Error('Não foi selecionado a opção de escolha.');
       }
     }
+
+    // if (this.getEtapa() == 'rh') {
+    //   if (typeof this.dadosFormulario.dados === 'string') {
+    //     this.dadosFormulario.dados = JSON.parse(this.dadosFormulario.dados);
+    //   }
+
+    //   try {
+    //     let retorno: Dados = { outputData: { responseCode: 400 } };
+    //     if (this.dadosFormulario.tipo_acao === 'Salvar Rascunho') {
+    //       retorno.outputData.responseCode = 201;
+    //     } else {
+    //       retorno = await firstValueFrom(
+    //         this.insereProposta(this.dadosFormulario)
+    //       );
+    //     }
+
+    //     if (retorno.outputData.responseCode === 200) {
+    //       this.dadosFormulario.dados = JSON.stringify(
+    //         this.dadosFormulario.dados
+    //       );
+    //       return { formData: this.dadosFormulario };
+    //     } else if (retorno.outputData.responseCode === 201) {
+    //       this.obterMensagem.next({
+    //         tipo: 1,
+    //         mensagem: 'Gravado com sucesso!',
+    //       });
+    //       this.dadosFormulario.dados = JSON.stringify(
+    //         this.dadosFormulario.dados
+    //       );
+    //       return { formData: this.dadosFormulario };
+    //     } else {
+    //       this.obterMensagem.next({
+    //         tipo: 4,
+    //         mensagem: 'Não foi possível gravar o formulário. Verifique!',
+    //       });
+    //       throw new Error('Não foi possível gravar o formulário. Verifique!');
+    //     }
+    //   } catch (err) {
+    //     this.obterMensagem.next({
+    //       tipo: 4,
+    //       mensagem: 'Erro ao gravar. Tente novamente.',
+    //     });
+    //     throw err;
+    //   }
+    // } else {
+    //   if (
+    //     this.dadosFormulario.tipo_acao === 'Salvar Rascunho' ||
+    //     this.dadosFormulario.tipo_acao === 'Seguir Processo'
+    //   ) {
+    //     if (typeof this.dadosFormulario.dados !== 'string') {
+    //       this.dadosFormulario.dados = JSON.stringify(
+    //         this.dadosFormulario.dados
+    //       );
+    //     }
+
+    //     return { formData: this.dadosFormulario };
+    //   } else {
+    //     this.obterMensagem.next({
+    //       tipo: 4,
+    //       mensagem: 'Não foi selecionado a opção de escolha. Verifique!',
+    //     });
+    //     throw new Error('Não foi selecionado a opção de escolha.');
+    //   }
+    // }
   };
 
   // Função _loadData é chamada ao abrir o formulário, carregando os dados das variáveis do fluxo.
@@ -158,12 +237,12 @@ export class ServiceBpmService {
       );
       this.dadosFormulario.dados = variavel.get('dados');
       this.dadosFormulario.tipo_acao = variavel.get('tipo_acao');
+      console.log(this.dadosFormulario);
 
       // transformar em Array antes de encaminhar para o componente
-      if (this.dadosFormulario.dados) {
+      if (!Array.isArray(this.dadosFormulario.dados)) {
         this.dadosFormulario.dados = JSON.parse(this.dadosFormulario.dados);
       }
-      // console.log(this.dadosFormulario)
 
       _info.getPlatformData().then((dados) => {
         this.dadosUsuario.access_token = dados.token.access_token;

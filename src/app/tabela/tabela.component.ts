@@ -6,7 +6,7 @@ import { MotivoAnotacao } from '../interfaces/motivo.inteface';
 import { Dados, Formulario } from '../interfaces/formulario.interface';
 
 interface tipo {
-  tipo: 'Salvar Rascunho' | 'Seguir Processo';
+  tipo: 'Salvar Rascunho' | 'Seguir Processo' | 'Retornar';
 }
 
 @Component({
@@ -34,6 +34,7 @@ export class TabelaComponent {
   opcao: tipo[] = [{ tipo: 'Salvar Rascunho' }, { tipo: 'Seguir Processo' }];
   opcaoSelecionada!: tipo;
   habilitarDados: boolean = false;
+  exibirCheck: boolean = false;
 
   constructor(private servico: ServiceBpmService) {
     // this.dadosTabelaFiltro = [
@@ -47,14 +48,23 @@ export class TabelaComponent {
     //     desCar: 'Analista de Sistemas',
     //     desPos: 'PLUMA CASSILANDIA - EQUIPE DE VACINA/AUXILIAR PROD',
     //     valSal: '1.627,07',
-    //     PerAlt1: '0',
-    //     PerAlt2: '0',
+    //     PerAlt1: '0.00',
+    //     PerAlt2: '0.00',
     //     DatAlt1: '20/08/2025',
     //     DatAlt2: '0',
     //   },
     // ];
 
     this.carregando = true;
+    if (servico.getEtapa() == 'rh') {
+      this.opcao = [
+        { tipo: 'Salvar Rascunho' },
+        { tipo: 'Seguir Processo' },
+        { tipo: 'Retornar' },
+      ];
+      this.exibirCheck = true;
+    }
+
     servico.dados$.subscribe({
       next: (retorno) => {
         this.dadosFormulario = retorno;
@@ -68,46 +78,70 @@ export class TabelaComponent {
 
         if (typeof this.dadosTabela === 'string') {
           this.dadosTabela = JSON.parse(this.dadosTabela);
-          this.dadosTabelaFiltro = this.dadosTabela.map((item) => {
-            return {
-              numEmp: item.numEmp,
-              nomEmp: item.nomEmp,
-              estPos: item.estPos,
-              tipCol: item.tipCol,
-              posTra: item.posTra,
-              estCar: item.estCar,
-              codCar: item.codCar,
-              numCad: item.numCad,
-              nomFun: item.nomFun,
-              desPos: item.desPos,
-              valSal: item.valSal,
-              DatAlt1: item.DatAlt1,
-              DatAlt2: item.DatAlt2,
-              PerAlt1: item.PerAlt1,
-              PerAlt2: item.PerAlt2,
-            };
-          });
+          this.dadosTabelaFiltro = this.dadosTabela
+            .map((item) => {
+              const etapa = this.servico.getEtapa();
+
+              const precisaGestor =
+                etapa === 'gestor' && item.validado !== true;
+              const precisaRh = etapa === 'rh';
+
+              if (precisaGestor || precisaRh) {
+                return {
+                  numEmp: item.numEmp,
+                  nomEmp: item.nomEmp,
+                  estPos: item.estPos,
+                  tipCol: item.tipCol,
+                  posTra: item.posTra,
+                  estCar: item.estCar,
+                  codCar: item.codCar,
+                  numCad: item.numCad,
+                  nomFun: item.nomFun,
+                  desPos: item.desPos,
+                  valSal: item.valSal,
+                  DatAlt1: item.DatAlt1,
+                  DatAlt2: item.DatAlt2,
+                  PerAlt1: item.PerAlt1,
+                  PerAlt2: item.PerAlt2,
+                  validado: item.validado,
+                };
+              }
+              return null;
+            })
+            .filter(Boolean);
         } else if (Array.isArray(this.dadosTabela)) {
-          this.dadosTabelaFiltro = this.dadosTabela.map((item) => {
-            return {
-              numEmp: item.numEmp,
-              nomEmp: item.nomEmp,
-              tipCol: item.tipCol,
-              codCen: item.codCen,
-              estPos: item.estPos,
-              posTra: item.posTra,
-              estCar: item.estCar,
-              codCar: item.codCar,
-              numCad: item.numCad,
-              nomFun: item.nomFun,
-              desPos: item.desPos,
-              valSal: item.valSal,
-              DatAlt1: item.DatAlt1,
-              DatAlt2: item.DatAlt2,
-              PerAlt1: item.PerAlt1,
-              PerAlt2: item.PerAlt2,
-            };
-          });
+          this.dadosTabelaFiltro = this.dadosTabela
+            .map((item) => {
+              const etapa = this.servico.getEtapa();
+
+              const precisaGestor =
+                etapa === 'gestor' && item.validado !== true;
+              const precisaRh = etapa === 'rh';
+
+              if (precisaGestor || precisaRh) {
+                return {
+                  numEmp: item.numEmp,
+                  nomEmp: item.nomEmp,
+                  estPos: item.estPos,
+                  tipCol: item.tipCol,
+                  posTra: item.posTra,
+                  estCar: item.estCar,
+                  codCar: item.codCar,
+                  numCad: item.numCad,
+                  nomFun: item.nomFun,
+                  desPos: item.desPos,
+                  valSal: item.valSal,
+                  DatAlt1: item.DatAlt1,
+                  DatAlt2: item.DatAlt2,
+                  PerAlt1: item.PerAlt1,
+                  PerAlt2: item.PerAlt2,
+                  validado: item.validado,
+                };
+              }
+
+              return null;
+            })
+            .filter(Boolean);
         }
         setTimeout(() => {
           this.carregando = false;
@@ -122,6 +156,76 @@ export class TabelaComponent {
         this.enviaMensagem.emit(this.mensagem);
       },
     });
+
+    // servico.dados$.subscribe({
+    //   next: (retorno) => {
+    //     this.dadosFormulario = retorno;
+    //     this.dadosTabela = this.dadosFormulario.dados;
+    //     if (
+    //       this.dadosFormulario.tipo_acao == 'Salvar Rascunho' ||
+    //       this.dadosFormulario.tipo_acao == 'Seguir Processo'
+    //     ) {
+    //       this.opcaoSelecionada = { tipo: this.dadosFormulario.tipo_acao };
+    //     }
+
+    //     if (typeof this.dadosTabela === 'string') {
+    //       this.dadosTabela = JSON.parse(this.dadosTabela);
+    //       this.dadosTabelaFiltro = this.dadosTabela.map((item) => {
+    //         return {
+    //           numEmp: item.numEmp,
+    //           nomEmp: item.nomEmp,
+    //           estPos: item.estPos,
+    //           tipCol: item.tipCol,
+    //           posTra: item.posTra,
+    //           estCar: item.estCar,
+    //           codCar: item.codCar,
+    //           numCad: item.numCad,
+    //           nomFun: item.nomFun,
+    //           desPos: item.desPos,
+    //           valSal: item.valSal,
+    //           DatAlt1: item.DatAlt1,
+    //           DatAlt2: item.DatAlt2,
+    //           PerAlt1: item.PerAlt1,
+    //           PerAlt2: item.PerAlt2,
+    //           validado: item.validado,
+    //         };
+    //       });
+    //     } else if (Array.isArray(this.dadosTabela)) {
+    //       this.dadosTabelaFiltro = this.dadosTabela.map((item) => {
+    //         return {
+    //           numEmp: item.numEmp,
+    //           nomEmp: item.nomEmp,
+    //           tipCol: item.tipCol,
+    //           codCen: item.codCen,
+    //           estPos: item.estPos,
+    //           posTra: item.posTra,
+    //           estCar: item.estCar,
+    //           codCar: item.codCar,
+    //           numCad: item.numCad,
+    //           nomFun: item.nomFun,
+    //           desPos: item.desPos,
+    //           valSal: item.valSal,
+    //           DatAlt1: item.DatAlt1,
+    //           DatAlt2: item.DatAlt2,
+    //           PerAlt1: item.PerAlt1,
+    //           PerAlt2: item.PerAlt2,
+    //           validado: item.validado,
+    //         };
+    //       });
+    //     }
+    //     setTimeout(() => {
+    //       this.carregando = false;
+    //     }, 1000);
+    //   },
+    //   error: (error) => {
+    //     this.carregando = false;
+    //     this.mensagem = {
+    //       tipo: 4,
+    //       mensagem: 'Não foi possível obter dados. Verifique a conexão.',
+    //     };
+    //     this.enviaMensagem.emit(this.mensagem);
+    //   },
+    // });
   }
 
   obterStatusCarregando(status: boolean) {
@@ -141,6 +245,7 @@ export class TabelaComponent {
     this.dadoSelecionado.DatAlt2 = dado.DatAlt2;
     this.dadoSelecionado.PerAlt1 = dado.PerAlt1;
     this.dadoSelecionado.PerAlt2 = dado.PerAlt2;
+    this.dadoSelecionado.validado = dado.validado;
   }
 
   // gravar dados

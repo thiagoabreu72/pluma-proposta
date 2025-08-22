@@ -35,5 +35,6 @@ export interface Dados {
   valSal?: number;
   responseCode?: number;
   outputData?: any;
+  validado?: boolean;
   dados?: Colaborador[];
 }
