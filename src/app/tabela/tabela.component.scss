@@ -125,9 +125,7 @@ th {
   border-color: rgb(32, 151, 38);
 }
 
-:host
-  ::ng-deep
-  .p-checkbox:not(.p-checkbox-disabled)
+:host ::ng-deep .p-checkbox:not(.p-checkbox-disabled)
   .p-checkbox-box.p-highlight:hover {
   border-color: rgb(32, 151, 38);
   background: rgb(32, 151, 38);

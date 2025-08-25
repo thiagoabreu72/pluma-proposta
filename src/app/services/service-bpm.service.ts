@@ -49,18 +49,6 @@ export class ServiceBpmService {
     const elemento: any = document.querySelector('app-root');
     this.idPlugin = elemento.getAttribute('idPlugin');
     this.urlSenior = elemento.getAttribute('urlG5');
-
-    user
-      .getToken()
-      .then((retorno: Token) => {
-        this.token = retorno;
-        this.capturaAcao.next(this.token);
-      })
-      .catch((error) => {
-        alert(
-          'Não foi possível obter token. Verifique se a tela está sendo acessada pela plataforma Senior X.'
-        );
-      });
   }
 
   // Funções do BPM
@@ -96,7 +84,7 @@ export class ServiceBpmService {
               throw new Error(msg);
             }
             retorno = await firstValueFrom(
-              this.insereOrcamento(this.dadosFormulario)
+              this.insereProposta(this.dadosFormulario)
             );
             break;
           case 'Retornar':
@@ -148,70 +136,6 @@ export class ServiceBpmService {
         throw new Error('Não foi selecionado a opção de escolha.');
       }
     }
-
-    // if (this.getEtapa() == 'rh') {
-    //   if (typeof this.dadosFormulario.dados === 'string') {
-    //     this.dadosFormulario.dados = JSON.parse(this.dadosFormulario.dados);
-    //   }
-
-    //   try {
-    //     let retorno: Dados = { outputData: { responseCode: 400 } };
-    //     if (this.dadosFormulario.tipo_acao === 'Salvar Rascunho') {
-    //       retorno.outputData.responseCode = 201;
-    //     } else {
-    //       retorno = await firstValueFrom(
-    //         this.insereProposta(this.dadosFormulario)
-    //       );
-    //     }
-
-    //     if (retorno.outputData.responseCode === 200) {
-    //       this.dadosFormulario.dados = JSON.stringify(
-    //         this.dadosFormulario.dados
-    //       );
-    //       return { formData: this.dadosFormulario };
-    //     } else if (retorno.outputData.responseCode === 201) {
-    //       this.obterMensagem.next({
-    //         tipo: 1,
-    //         mensagem: 'Gravado com sucesso!',
-    //       });
-    //       this.dadosFormulario.dados = JSON.stringify(
-    //         this.dadosFormulario.dados
-    //       );
-    //       return { formData: this.dadosFormulario };
-    //     } else {
-    //       this.obterMensagem.next({
-    //         tipo: 4,
-    //         mensagem: 'Não foi possível gravar o formulário. Verifique!',
-    //       });
-    //       throw new Error('Não foi possível gravar o formulário. Verifique!');
-    //     }
-    //   } catch (err) {
-    //     this.obterMensagem.next({
-    //       tipo: 4,
-    //       mensagem: 'Erro ao gravar. Tente novamente.',
-    //     });
-    //     throw err;
-    //   }
-    // } else {
-    //   if (
-    //     this.dadosFormulario.tipo_acao === 'Salvar Rascunho' ||
-    //     this.dadosFormulario.tipo_acao === 'Seguir Processo'
-    //   ) {
-    //     if (typeof this.dadosFormulario.dados !== 'string') {
-    //       this.dadosFormulario.dados = JSON.stringify(
-    //         this.dadosFormulario.dados
-    //       );
-    //     }
-
-    //     return { formData: this.dadosFormulario };
-    //   } else {
-    //     this.obterMensagem.next({
-    //       tipo: 4,
-    //       mensagem: 'Não foi selecionado a opção de escolha. Verifique!',
-    //     });
-    //     throw new Error('Não foi selecionado a opção de escolha.');
-    //   }
-    // }
   };
 
   // Função _loadData é chamada ao abrir o formulário, carregando os dados das variáveis do fluxo.
@@ -254,18 +178,6 @@ export class ServiceBpmService {
   private _rollback = (_data: Data, _info: Info): any => {
     _data.error = 'erro ao carregar dados.';
   };
-
-  insereOrcamento(parametros: Formulario): Observable<Dados> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `bearer ${this.dadosUsuario.access_token}`,
-    });
-    let body = {};
-    body = this.montarBody('insereOrcamento', parametros);
-    return this.http.post<Dados>(this.urlInvoke, body, {
-      headers,
-    });
-  }
 
   insereProposta(parametros: Formulario): Observable<Dados> {
     const headers = new HttpHeaders({
